@@ -1,3 +1,4 @@
+import json
 import re
 from dataclasses import asdict, fields, is_dataclass
 from typing import Sequence, TypeVar
@@ -45,3 +46,13 @@ def extract_layer_from_tlens_hook_name(hook_name: str) -> int | None:
     """
     hook_match = re.search(r"\.(\d+)\.", hook_name)
     return None if hook_match is None else int(hook_match.group(1))
+
+
+def safe_json_dump(obj: object, fp, **kwargs):  # type: ignore
+    """Dump an object to a JSON file, ensuring it is JSON serializable."""
+
+    def safe_default(obj: object) -> str:
+        """Ensure that the object is JSON serializable."""
+        return f"<{obj.__class__.__name__}>"
+
+    json.dump(obj, fp, default=safe_default, **kwargs)

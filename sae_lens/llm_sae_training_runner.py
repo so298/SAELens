@@ -1,4 +1,3 @@
-import json
 import signal
 import sys
 from collections.abc import Sequence
@@ -32,6 +31,7 @@ from sae_lens.training.activation_scaler import ActivationScaler
 from sae_lens.training.activations_store import ActivationsStore
 from sae_lens.training.sae_trainer import SAETrainer
 from sae_lens.training.types import DataProvider
+from sae_lens.util import safe_json_dump
 
 
 class InterruptedException(Exception):
@@ -267,7 +267,7 @@ class LanguageModelSAETrainingRunner:
 
         runner_config = self.cfg.to_dict()
         with open(checkpoint_path / RUNNER_CFG_FILENAME, "w") as f:
-            json.dump(runner_config, f)
+            safe_json_dump(runner_config, f)
 
 
 def _parse_cfg_args(

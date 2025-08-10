@@ -1,7 +1,6 @@
 """Base classes for Sparse Autoencoders (SAEs)."""
 
 import copy
-import json
 import warnings
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
@@ -33,7 +32,7 @@ from sae_lens.constants import (
     SAE_CFG_FILENAME,
     SAE_WEIGHTS_FILENAME,
 )
-from sae_lens.util import filter_valid_dataclass_fields
+from sae_lens.util import filter_valid_dataclass_fields, safe_json_dump
 
 if TYPE_CHECKING:
     from sae_lens.config import LanguageModelSAERunnerConfig
@@ -526,7 +525,7 @@ class SAE(HookedRootModule, Generic[T_SAE_CONFIG], ABC):
         config = self.cfg.to_dict()
         cfg_path = path / SAE_CFG_FILENAME
         with open(cfg_path, "w") as f:
-            json.dump(config, f)
+            safe_json_dump(config, f)
 
         return model_weights_path, cfg_path
 
@@ -977,7 +976,7 @@ class TrainingSAE(SAE[T_TRAINING_SAE_CONFIG], ABC):
         config = self.cfg.get_inference_sae_cfg_dict()
         cfg_path = path / SAE_CFG_FILENAME
         with open(cfg_path, "w") as f:
-            json.dump(config, f)
+            safe_json_dump(config, f)
 
         return model_weights_path, cfg_path
 
